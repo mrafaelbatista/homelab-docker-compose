@@ -1,0 +1,53 @@
+# Versão do docker-compose
+version: "3.9"
+
+# Serviços (containers)
+services:
+  
+  # Container do SQL Server
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment: 
+      TZ: "America/Recife" # Timezone
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "<YOUR PASSWORD>"
+    # Definir o diretório para cada servidor
+    # Os volumes não funcionaram no SQL Server (em pesquisa)
+    # volumes:
+    #   - ./sqlserver/data:/var/opt/mssql/data
+    #   - ./databases/sqlserver/log:/var/opt/mssql/log
+    #   - ./databases/sqlserver/secrets:/var/opt/mssql/secrets
+    restart: always
+  
+    # Container MySQL
+  mysql:
+    container_name: mysql    
+    image: mysql:latest    
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment: 
+      TZ: "America/Recife" #Timezone 
+      MYSQL_ROOT_PASSWORD: "<YOUR PASSWORD>"
+    # Definir o diretório para cada servidor
+    volumes:
+      - ./databases/mysql/data:/var/lib/mysql
+    restart: always
+  
+  # PostgreSQL ainda não foi testado
+  # Container PostgreSQL
+  # postgres:
+  #   container_name: postgres
+  #   image: postgres:latest
+  #   ports:
+  #     - "3306:3306"
+  #   environment: 
+  #     TZ: "America/Recife" #Timezone 
+  #     POSTGRES_PASSWORD: "<YOUR PASSWORD>"
+  #   # Definir o diretório para cada servidor
+  #   volumes:
+  #     - ./databases/postgresql/data:/var/lib/postgresql/data
+  #   restart: always
